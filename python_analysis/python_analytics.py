@@ -240,4 +240,34 @@ plt.tight_layout()
 plt.savefig('graph5_precision.png', dpi=150)
 plt.show()
 
+
+# ============================================================
+# ПОСТРОЕНИЕ ГРАФИКА (Эффективность E(N))
+# ============================================================
+
+fig, ax = plt.subplots(figsize=(8, 5))
+for os_name in ['deb', 'git']:
+    d = sub[sub['os'] == os_name].sort_values('N')
+    if d.empty or d['N'].iloc[0] != 1:
+        continue
+    t1 = d[d['N'] == 1]['time_us'].values[0]
+    N  = d['N'].values
+    efficiency = t1 / (d['time_us'].values * N)
+    ax.plot(N, efficiency, marker='^', label=f'{os_name} (E(N))',
+            linewidth=2, markersize=8)
+
+ax.axhline(y=1.0, color='gray', linestyle=':', alpha=0.5,
+           label='Идеальная E(N) = 1')
+
+ax.set_xlabel('Число процессов N', fontsize=12)
+ax.set_ylabel('Эффективность E(N) = S(N)/N', fontsize=12)
+ax.set_title('Эффективность параллельной версии', fontsize=13)
+ax.set_xscale('log', base=2)
+ax.set_yscale('log')
+ax.grid(True, which='both', alpha=0.3)
+ax.legend(fontsize=11)
+plt.tight_layout()
+plt.savefig('graph2b_efficiency.png', dpi=150)
+plt.show()
+
 print("Выполнение завершено")
